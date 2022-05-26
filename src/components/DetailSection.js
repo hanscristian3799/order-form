@@ -1,16 +1,42 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchUsers,
+  employees,
+  changeIsNameDistributionFilled,
+  isNameDistributionFilled,
+  setName,
+  setDistributionCenter,
+  setExpiredDate,
+  setPaymentType,
+  name,
+  distributionCenter,
+  expiredDate,
+  paymentType,
+  notes,
+  setNotes,
+} from "../store/reducers/formSlice";
+import { distributionCenters, paymentTypes } from "../helpers/datas";
 import "react-datepicker/dist/react-datepicker.css";
 
 const DetailSection = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+  const dispatch = useDispatch();
+  const employeesData = useSelector(employees);
+  const isAppear = useSelector(isNameDistributionFilled);
+  const nameVal = useSelector(name);
+  const distributionCenterVal = useSelector(distributionCenter);
+  const paymentTypeVal = useSelector(paymentType);
+  const expiredDateVal = useSelector(expiredDate);
+
+  const ExampleCustomInputDate = forwardRef(({ value, onClick }, ref) => (
     <div className="input-group flex-nowrap" onClick={onClick} ref={ref}>
       <input
         type="text"
         className="form-control"
-        placeholder="Username"
-        defaultValue={value}
+        placeholder="Expired Date"
+        value={expiredDateVal}
+        readOnly
         aria-label="Username"
         aria-describedby="addon-wrapping"
       ></input>
@@ -29,6 +55,41 @@ const DetailSection = () => {
       </span>
     </div>
   ));
+
+  const fetchData = async () => {
+    await dispatch(fetchUsers());
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const changeName = (val) => {
+    dispatch(setName(val.target.value));
+  };
+
+  const changeDistibutionCenter = (val) => {
+    console.log("VAL", val.target.value);
+    dispatch(setDistributionCenter(val.target.value));
+    dispatch(changeIsNameDistributionFilled(true));
+  };
+
+  const changePaymentType = (val) => {
+    dispatch(setPaymentType(val.target.value));
+  };
+
+  const changeExpiredDate = (val) => {
+    console.log("WOIAAA", val);
+    const newDate = val.toLocaleDateString("en-US");
+    console.log("NEW DATE", newDate);
+    dispatch(setExpiredDate(newDate));
+  };
+
+  const submitNotes = (val) => {
+    console.log("SUBMIT NOTES", val.target.value);
+    dispatch(setNotes(val.target.value));
+  };
+
   return (
     <div className="d-flex flex-row align-items-center justify-content-between">
       <h6 className="flex-shrink-1 w-25 align-self-start">Detail</h6>
@@ -38,9 +99,23 @@ const DetailSection = () => {
             <label htmlFor="selectName" className="form-label">
               Name <span className="label-required">*</span>
             </label>
-            <select className="form-select" id="selectName" defaultValue="0">
-              <option value="0">Open this select menu</option>
-              <option value="1">One</option>
+            <select
+              className="form-select"
+              id="selectName"
+              onChange={changeName}
+              value={nameVal}
+            >
+              <option value="0" disabled>
+                Select Name
+              </option>
+              {employeesData.map((e) => {
+                return (
+                  <option
+                    value={e.id}
+                    key={e.id}
+                  >{`${e.first_name} ${e.last_name}`}</option>
+                );
+              })}
             </select>
           </div>
 
@@ -51,51 +126,81 @@ const DetailSection = () => {
             <select
               className="form-select"
               id="selectDistribution"
-              defaultValue="0"
+              onChange={changeDistibutionCenter}
+              value={distributionCenterVal}
             >
-              <option value="0">Open this select menu</option>
-              <option value="1">One</option>
+              {nameVal === "0" ? (
+                <option value="0">No data available</option>
+              ) : (
+                distributionCenters.map((dc, index) => {
+                  return index === 0 ? (
+                    <option disabled value={dc.id} key={dc.id}>
+                      {dc.name}
+                    </option>
+                  ) : (
+                    <option value={dc.id} key={dc.id}>
+                      {dc.name}
+                    </option>
+                  );
+                })
+              )}
             </select>
           </div>
 
-          <div className="paymentdate d-flex flex-row align-items-center mb-3">
-            <div className="payment w-50 me-3">
-              <label htmlFor="selectPayment" className="form-label">
-                Payment Type <span className="label-required">*</span>
-              </label>
-              <select
-                className="form-select"
-                id="selectPayment"
-                defaultValue="0"
+          {isAppear ? (
+            <div className="paymentdate d-flex flex-row align-items-center mb-3">
+              <div className="payment w-50 me-3">
+                <label htmlFor="selectPayment" className="form-label">
+                  Payment Type <span className="label-required">*</span>
+                </label>
+                <select
+                  className="form-select"
+                  id="selectPayment"
+                  value={paymentTypeVal}
+                  onChange={changePaymentType}
+                >
+                  <option value="0">Select payment</option>
+                  {paymentTypes.map((p) => {
+                    return (
+                      <option value={p.id} key={p.id}>
+                        {p.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div className="date w-50">
+                <label htmlFor="selectDate" className="form-label">
+                  Expired Date <span className="label-required">*</span>
+                </label>
+                <DatePicker
+                  selected={Date.now()}
+                  onChange={(date) => changeExpiredDate(date)}
+                  customInput={<ExampleCustomInputDate />}
+                />
+              </div>
+            </div>
+          ) : null}
+
+          {isAppear ? (
+            <div className="notes mb-3">
+              <label
+                htmlFor="exampleFormControlTextarea1"
+                className="form-label"
               >
-                <option value="0">Open this select menu</option>
-                <option value="1">One</option>
-              </select>
-            </div>
-
-            <div className="date w-50">
-              <label htmlFor="selectDate" className="form-label">
-                Expired Date <span className="label-required">*</span>
+                Notes
               </label>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                customInput={<ExampleCustomInput />}
-              />
+              <textarea
+                className="form-control"
+                id="exampleFormControlTextarea1"
+                rows="3"
+                style={{ resize: "none" }}
+                onBlur={submitNotes}
+                defaultValue={notes}
+              ></textarea>
             </div>
-          </div>
-
-          <div className="notes mb-3">
-            <label htmlFor="exampleFormControlTextarea1" className="form-label">
-              Notes
-            </label>
-            <textarea
-              className="form-control"
-              id="exampleFormControlTextarea1"
-              rows="3"
-              style={{ resize: "none" }}
-            ></textarea>
-          </div>
+          ) : null}
         </div>
       </div>
     </div>

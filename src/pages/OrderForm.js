@@ -11,7 +11,6 @@ const Home = () => {
       <div className="card mb-4">
         <div className="card-body">
           <DetailSection />
-          <hr></hr>
           <ProductsSection />
           <hr></hr>
           <SubmitSection />
