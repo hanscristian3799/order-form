@@ -113,17 +113,17 @@ const ProductComponent = ({ index }) => {
               defaultValue="0"
               onChange={changeProductUnit}
             >
-              <option value="0">Select unit</option>
+              <option value="0">{selectedProduct !== "" ? "Select unit" : "No data available"}</option>
               {selectedProduct !== ""
                 ? products
-                    .find((p) => p.product_name === selectedProduct)
-                    .units.map((u) => {
-                      return (
-                        <option value={u.unit_name} key={u.unit_name}>
-                          {u.unit_name}
-                        </option>
-                      );
-                    })
+                  .find((p) => p.product_name === selectedProduct)
+                  .units.map((u) => {
+                    return (
+                      <option value={u.unit_name} key={u.unit_name}>
+                        {u.unit_name}
+                      </option>
+                    );
+                  })
                 : null}
             </select>
           </div>
