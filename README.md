@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Getting Started with Order Form
 
-This is a order form project created with React
+This is a order form project created with React.
 
 ## Available Scripts
 
