@@ -39,7 +39,6 @@ const ProductComponent = ({ index }) => {
     if (event.target.value < 0) return;
     setQuantity(event.target.value);
     const totalPrice = price * event.target.value;
-    console.log("Tprice", totalPrice);
     setTotalPrice(totalPrice);
     setTotalNettPrice(totalPrice);
     dispatch(

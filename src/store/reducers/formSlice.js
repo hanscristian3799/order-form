@@ -42,9 +42,7 @@ export const formSlice = createSlice({
       state.notes = action.payload;
     },
     addProducts: (state, action) => {
-      console.log("ADDDDD", action.payload);
       if (action.payload !== null) {
-        console.log("MASUK IF");
         state.userProducts.splice(action.payload.index, 1);
         state.userProducts.splice(action.payload.index, 0, {
           status: "filled",
@@ -56,7 +54,6 @@ export const formSlice = createSlice({
         });
         state.totalProductsPrice += action.payload.totalPrice;
       } else {
-        console.log("MASUK ELSE");
         state.userProducts.push({ status: "empty" });
       }
     },
@@ -72,7 +69,6 @@ export const formSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log("WOI", action.payload);
         state.employees = action.payload;
       });
   },

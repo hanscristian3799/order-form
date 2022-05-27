@@ -69,7 +69,6 @@ const DetailSection = () => {
   };
 
   const changeDistibutionCenter = (val) => {
-    console.log("VAL", val.target.value);
     dispatch(setDistributionCenter(val.target.value));
     dispatch(changeIsNameDistributionFilled(true));
   };
@@ -79,14 +78,11 @@ const DetailSection = () => {
   };
 
   const changeExpiredDate = (val) => {
-    console.log("WOIAAA", val);
     const newDate = val.toLocaleDateString("en-US");
-    console.log("NEW DATE", newDate);
     dispatch(setExpiredDate(newDate));
   };
 
   const submitNotes = (val) => {
-    console.log("SUBMIT NOTES", val.target.value);
     dispatch(setNotes(val.target.value));
   };
 
